@@ -7,7 +7,7 @@ Created on Thu Apr 23 14:22:07 2020
 """
 
 import pandas as pd
-from form import Form
+from me_indicators_automation.form import Form
 import datetime as dt
 
 def clean(form):
@@ -17,14 +17,14 @@ def clean(form):
     form.remove_duplicates()
 
 ## Pregnancy Screening
-def hello(filename):
+def pss_metrics(file):
     #filename = './Data/pregnancy_screening.csv'
     cols = ['chw_name','woman_at_home','woman_ID','last_visit','last_visit_nepali',
             'agrees_for_service','urine_test','urine_test_positive',
             'pregnancy_status','balanced_counseling.bcs_form.method_change',
             'menopause','want_more_children', 'birth_gap', 'contraceptive_current',
             'balanced_counseling.bcs_form.counseling.method_chosen1']
-    pss = Form(filename, cols)
+    pss = Form(file, cols)
     clean(pss)
 
     pss.count_by_chw('elig_wm','person_id')
