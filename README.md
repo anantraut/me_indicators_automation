@@ -21,8 +21,6 @@ Install me_indicators_automation::
 Run
 ---
 
-::
-
     $ export FLASK_APP=me_indicators_automation
     $ export FLASK_ENV=development
     $ flask run
