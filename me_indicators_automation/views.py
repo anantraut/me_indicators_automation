@@ -21,7 +21,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def home():
     return render_template('home.html')
 
-@app.route('/data', methods=['GET','POST'])
+@app.route('/pss', methods=['GET','POST'])
 def data():
     if request.method == "POST":
         f = request.files['csvfile']

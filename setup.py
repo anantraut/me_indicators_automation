@@ -5,6 +5,7 @@ setup(
     packages=['me_indicators_automation'],
     include_package_data=True,
     install_requires=[
-        'flask',
+        'flask>=1.1.1',
+        'pandas>=1.0.1'
     ],
 )
