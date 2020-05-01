@@ -6,42 +6,86 @@
 </head>
 <body>
   <div id = "main">
-  <h1>M&E Metrics generator</h1>
-      <div id = "form" class = "row">
-        <div class ="column left">
-          <h3>Pregnancy Screening</h3>
-          <form class="" action="pss" method="post" enctype="multipart/form-data">
-            Select csv file
-            <input type="file" name="pss_csv" class = "hide_file" value="Select Pregnancy screening"><br>
-            <label id='label'>From</label>
-            <input type="date" name="from" value=""><label id='label'>to</label>
-            <input type="date" name="to" value=""><br>
-            <input type ="submit" name="submit" value="GENERATE">
-          </div>
-          <div class = "column right">
-        <p>The csv file should include the following columns: <p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
+    <h1>M&E Metrics generator</h1>
+    <div id = "form" class = "row">
+      <div class ="column left">
+        <h3>Household case metrics</h3>
+        <form class="" action="house" method="post" enctype="multipart/form-data">
+          Select excel file
+          <input type="file" name="house_file" value="" required><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
+      </div>
+      <div class = "column right">
+        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, houseID, 
+        house_name, has_plate, last_modified_date, closed</p></p>
+      </div>
+    </div>
+    <div id = "form" class = "row">
+      <div class ="column left">
+        <h3>Family case metrics</h3>
+        <form class="" action="family" method="post" enctype="multipart/form-data">
+          Select excel file
+          <input type="file" name="family_file" value="" required><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
+      </div>
+      <div class = "column right">
+        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, familyID, family_head, 
+        last_modified_date, closed, enrollment_complete, family_female_non_residents, family_male_non_residents, family_female_residents, 
+        family_male_residents, residence_type</p></p>
+      </div>
+    </div>
+    <div id = "form" class = "row">
+      <div class ="column left">
+        <h3>Individual case metrics</h3>
+        <form class="" action="individual" method="post" enctype="multipart/form-data">
+          Select excel file
+          <input type="file" name="individual_file" value="" required><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
+      </div>
+      <div class = "column right">
+        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, name_text, individualID, 
+        last_modified_date, closed, eligible_woman, anc, pdf_direct, pnc1, pnc2, child_under_2, post_delivery, imam_patient, cd_patient, 
+        surgery_patient, hypertension_screening, hypertension_screening_second_visit</p></p>
+      </div>
+    </div>
+    <div id = "form" class = "row">
+      <div class ="column left">
+        <h3>Pregnancy Screening</h3>
+        <form class="" action="pss" method="post" enctype="multipart/form-data">
+          Select excel file
+          <input type="file" name="pss_file" value="" required><br>
+          <label id='label'>From</label>
+          <input type="date" name="from" value="2020-01-01" required><label id='label'>to</label>
+          <input type="date" name="to" value="2020-04-30" required><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
+      </div>
+      <div class = "column right">
+        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
           urine_test, urine_test_positive, pregnancy_status, balanced_counseling.bcs_form.method_change, menopause, want_more_children, birth_gap, contraceptive_current,
           balanced_counseling.bcs_form.counseling.method_chosen1</p></p>
-        </div>
-      </form>
+      </div>
     </div>
     <div id = "form" class ="row">
       <div class ="column left">
-      <h3>Post Delivery Form</h3>
-      <form class="" action="pdf" method="post" enctype="multipart/form-data">
-        <label for="pdf_csv">Select csv file:</label>
-        <input type="file" name="pdf_csv" value=""><br>
-        <label id='label'>From</label>
-        <input type="date" name="from" value=""><label id='label'>to</label>
-        <input type="date" name="to" value=""><br>
-        <input type ="submit" name="submit" value="GENERATE">
+        <h3>Post Delivery Form</h3>
+        <form class="" action="pdf" method="post" enctype="multipart/form-data">
+          Select excel file
+          <input type="file" name="pdf_file" value="" required><br>
+          <label id='label'>From</label>
+          <input type="date" name="from" value="2020-01-01" required><label id='label'>to</label>
+          <input type="date" name="to" value="2020-04-30" required><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
       </div>
       <div class ="column right">
-        <p>The csv file should include the following columns: <p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
-          child_one.birth_outcome1, child_two.birth_outcome2, child_three.birth_outcome3, child_one.baby_weight1, child_two.baby_weight2, child_three.baby_weight3,
-          pregnancy_outcome</p></p>
+        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
+        child_one.birth_outcome1, child_two.birth_outcome2, child_three.birth_outcome3, child_one.baby_weight1, child_two.baby_weight2, child_three.baby_weight3,
+        pregnancy_outcome</p></p>
       </div>
-      </form>
     </div>
   </div>
 </body>

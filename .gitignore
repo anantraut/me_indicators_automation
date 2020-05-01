@@ -14,6 +14,5 @@ build/
 *~
 .DS_Store
 my_env/
-me_indicators_automation/.DS_Store
 me_indicators_automation/Data/
-me_indicators_automation/.DS_Store
+.spyproject/

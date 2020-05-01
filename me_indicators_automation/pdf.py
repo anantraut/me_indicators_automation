@@ -6,14 +6,12 @@ Created on Thu Apr 23 14:22:07 2020
 @author: anant
 """
 
-import pandas as pd
-from me_indicators_automation.form import Form
-import datetime as dt
+from me_indicators_automation.case_form import CaseForm
 
 def clean(form):
     col_mapping = {"woman_ID":"person_id"}
     form.rename_columns(col_mapping)
-    form.strip_id()
+    form.strip_id('person_id')
 
 ## Post Delivery Form
 def pdf_metrics(file, dt1, dt2):
@@ -26,7 +24,7 @@ def pdf_metrics(file, dt1, dt2):
             'pregnancy_outcome']
     #woman_at_home does not exist
 
-    pdf = Form(file, cols)
+    pdf = CaseForm(file, cols)
     clean(pdf)
 
     df2 = pdf.df #df2 is created only to calculate ppw_visited (post partum women visited based on last_visit in date range)
@@ -35,7 +33,7 @@ def pdf_metrics(file, dt1, dt2):
 
     #filter for data with delivery date in the given date range, all indicators after this are based on this filtered data
     pdf.filter_by_date('delivery_date_pdf', [dt1,dt2])
-    pdf.remove_duplicates()
+    pdf.remove_duplicates(sort_by=['person_id', 'last_visit'],dupl_subset=['person_id'])
 
     pdf.count_by_chw('num_of_deliv','person_id')
     pdf.count_by_chw('inst_deliv','person_id',['delivery_location',['private_clinic_hospital', 'primary_health_center',

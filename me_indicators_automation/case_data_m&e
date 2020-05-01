@@ -1,0 +1,239 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 30 16:01:07 2019
+
+@author: anant
+"""
+#Set up logger
+import logging
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s',
+                    level=logging.INFO)
+logger = logging.getLogger()
+
+#import modules
+import requests
+import datetime as dt
+from requests.auth import HTTPBasicAuth
+from pandas.io.json import json_normalize
+import pandas as pd
+import numpy as np
+from multiprocessing.pool import ThreadPool
+
+###############################################################################
+# FUNCTIONS
+###############################################################################
+
+
+
+def get_json(feed_url):
+    """Takes a odata feed url, and returns feed data as json dictionary"""
+    
+    username = 'anant@possiblehealth.org'
+    api = '4f35c332674bf0cb99c7cae72347682f165ef9da'
+    response = requests.get(
+            feed_url, 
+            auth=HTTPBasicAuth(username, api))
+    return response.json()
+
+def load_data_helper(args):
+    """A helper function for passing multiple args to load_data()"""
+    
+    return load_data(*args)
+
+def load_data(name, feed_url):
+    """Takes the name and url of odata feed, and returns a dataframe"""
+    
+    logger.info('Start downloading %s data', name)
+    res_json = get_json(feed_url)
+    df = json_normalize(res_json, 'value')
+    while '@odata.nextLink' in res_json:
+        logger.debug('%d rows of %s data downloaded...', len(df.index), name)
+        nextLink = res_json['@odata.nextLink']
+        res_json = get_json(nextLink)
+        df = pd.concat([df, json_normalize(res_json, 'value')])
+    logger.info('Finished downloading %s data (%d rows)', name, len(df.index))
+    df = df.replace({'---':np.NaN,'':np.NaN})
+    return df
+
+def drop_closed_and_duplicates(df,unique_id,name,date):
+    """Takes a dataframe, uniuqe id and date by which to sort data, then drops
+    closed cases and any duplicates keeping the latest record based on date"""
+    
+    df = df[df['closed']==False]
+    df = df.sort_values(
+            [unique_id,name,date], ascending = True).drop_duplicates(
+                    subset=[unique_id,name], keep='last')
+    return df
+
+def remove_spaces(string):
+    """Takes a string, and returns the string without spaces"""
+    
+    return string.str.replace(" ","")
+ 
+def convert_to_Int64(df, cols):
+    """Takes a dataframe, and a list of its columns, then converts the columns
+    to numeric, then to dtype Int64 before returning the dataframe"""
+    
+    for col in cols:
+        df[col] = pd.to_numeric(df[col], errors='coerce')
+        df = df.astype({col:'Int64'})
+    return df
+
+# USE COMMENTED COD BLOCK BELOW FOR LOADING DATA FROM EXCEL FILES
+ #=============================================================================
+ #############################################################################
+ # GET DATA FROM CSV
+ #############################################################################
+ 
+def read_xls_file(filename,*cols):
+    df = pd.read_excel(filename, sheet_name=0, index_col=None, usecols=cols, 
+                       na_values=['---'])
+    return df
+ 
+house_data = read_xls_file('./Data/5. House Data Summary Report_upto Kartik.xlsx','chw_name','houseID','house_name',
+                           'has_plate','last_modified_date','closed')
+family_data=read_xls_file('./Data/3. Family Enrollment Monthly report_Bhadra 2076.xlsx',
+                          'chw_name','familyID','family_head','last_modified_date','closed',
+                          'enrollment_complete','family_female_non_residents','family_male_non_residents','family_female_residents','family_male_residents','residence_type')
+individual_data = read_xls_file('./Data/4. Individual-Enrollment_Bhadra 2076.xlsx',
+                                'chw_name','name_text','individualID','last_modified_date',
+                                'closed','eligible_woman','anc','pdf_direct',
+                                'pnc1','pnc2','child_under_2','post_delivery','imam_patient','cd_patient','surgery_patient','hypertension_screening','hypertension_screening_second_visit')
+# =============================================================================
+
+################################################################################
+## GET DATA FROM FEED
+################################################################################
+#
+## Define odata feed urls, and 
+#house_feed = ('https://www.commcarehq.org/a/possible-communityhealth/api'
+#              '/v0.5/odata/cases/80c2235dad967acac68ecf44936fd7b9/feed')
+#family_feed = ('https://www.commcarehq.org/a/possible-communityhealth/api'
+#               '/v0.5/odata/cases/37ccd8b2ef546d4668a6c1bc6349e827/feed')
+#individual_feed = ('https://www.commcarehq.org/a/possible-communityhealth/api'
+#                   '/v0.5/odata/cases/80c2235dad967acac68ecf4493746164/feed')
+#
+## Create lists of names and feeds to pass into load_data()
+#names = ['house','family','individual']
+#feeds = [house_feed, family_feed, individual_feed]
+#
+## Use multiprocessing to download the feeds simultaneously
+#results = ThreadPool(3).map(load_data_helper, zip(names,feeds))
+#house_data = results[0]
+#family_data = results[1]
+#individual_data = results[2]
+
+###############################################################################
+# CLEAN DATA
+###############################################################################
+
+# Trim ID of spaces
+house_data['houseID']= remove_spaces(house_data['houseID'])
+family_data['familyID']= remove_spaces(family_data['familyID'])
+individual_data['individualID']= remove_spaces(individual_data['individualID'])
+logger.info("Spaces in ID's trimmed")
+
+# Sort by last_modified_date and delete duplicate houseIDs,  
+## keeping the row with latest last_modified_date
+house_data = drop_closed_and_duplicates(house_data,'houseID','house_name',
+                                        'last_modified_date')
+family_data = drop_closed_and_duplicates(family_data,'familyID','family_head',
+                                         'last_modified_date')
+individual_data = drop_closed_and_duplicates(individual_data,'individualID','name_text',
+                                             'last_modified_date')
+logger.info("Closed cases and duplicate cases removed")
+
+# Clean residence_type to same type of value
+family_data['residence_type'] = family_data['residence_type'].map({1:1,2:2,
+           3:3,'single':1,'primary':2,'secondary':3})
+    
+    
+# Convert numeric columns to Int64
+family_data = convert_to_Int64(
+        family_data, ['residence_type','family_female_non_residents','family_male_non_residents','family_female_residents','family_male_residents'])
+individual_data = convert_to_Int64(
+        individual_data,['eligible_woman','anc','pdf_direct','pnc1','pnc2',
+                         'child_under_2'])
+
+logger.info("Data cleaned")
+
+###############################################################################
+# CALCULATE
+###############################################################################
+
+# Calculate number of individuals receiving service, and convert to Int64
+individual_data['receiving_service'] = individual_data[['eligible_woman',
+               'anc','pdf_direct','pnc1','pnc2','child_under_2','post_delivery','imam_patient','cd_patient','surgery_patient','hypertension_screening','hypertension_screening_second_visit']].sum(axis=1)>0
+individual_data = convert_to_Int64(individual_data, ['receiving_service'])
+
+# Get indicators for house data
+house_indicators = pd.crosstab(
+        house_data['chw_name'], house_data['has_plate']).join(
+        house_data.groupby('chw_name').agg(
+                houses_registered=('houseID','count'))).reset_index()
+house_indicators.rename(
+        columns = {'no':'no_plate', 'yes':'has_plate'}, inplace = True) 
+logger.info("Indicators for house case data calculated")
+
+# Get indicators for family data
+family_indicators = pd.crosstab(family_data['chw_name'],
+                                family_data['enrollment_complete']).join(
+        pd.crosstab(family_data['chw_name'],
+                    family_data['residence_type'])).join(
+                family_data.groupby(['chw_name']).agg(
+                        families_registered=('familyID', 'count'),
+                        tot_res_male=('family_male_residents', 'sum'),
+                        tot_res_fem=('family_female_residents', 'sum'),
+                        tot_non_res_male=('family_male_non_residents', 'sum'),
+                        tot_non_res_fem=('family_female_non_residents', 'sum')
+                        )).reset_index()
+family_indicators.rename(
+        columns = {'no':'enroll_not_complete', 'yes':'enroll_complete',
+                   1: 'Single', 2: 'Primary', 3: 'Secondary'}, inplace = True) 
+
+family_indicators['tot_female_members'] = family_indicators['tot_res_fem'] + family_indicators['tot_non_res_fem']
+family_indicators['tot_male_members'] = family_indicators['tot_res_male'] + family_indicators['tot_non_res_male']
+logger.info("Indicators for family case data calculated")
+
+# Get indicators for individual data
+individual_indicators = individual_data.groupby(['chw_name']
+    ).agg(individuals_registered=('individualID','count'),
+             eligible_women=('eligible_woman','sum'),
+             anc=('anc','sum'),
+             pdf_direct=('pdf_direct','sum'),
+             pnc1=('pnc1','sum'),
+             pnc2=('pnc2','sum'),
+             child_under_2=('child_under_2','sum'),
+             post_delivery=('post_delivery','sum'),
+             imam_patient=('imam_patient','sum'),
+             cd_patient=('cd_patient','sum'),
+             surgery_patient=('surgery_patient','sum'),
+             hypertension_screening=('hypertension_screening','sum'),
+             hypertension_screening_second_visit=('hypertension_screening_second_visit','sum'),
+             receiving_service=('receiving_service','sum')
+             ).reset_index()
+logger.info("Indicators for individual case data calculated")
+
+###############################################################################
+# OUTPUT
+###############################################################################
+
+# Create dataframe merging house, family, and individual indicators
+me_indicators = house_indicators.merge(
+        family_indicators,on='chw_name',how='left').merge(
+        individual_indicators,on='chw_name', how='left')
+
+# Reorder columns
+me_indicators = me_indicators[[
+        'chw_name', 'houses_registered', 'has_plate', 'no_plate',
+        'families_registered', 'enroll_complete', 'enroll_not_complete',
+        'Single', 'Primary', 'Secondary','tot_res_fem', 'tot_res_male','tot_female_members','tot_male_members',
+        'individuals_registered', 'receiving_service', 'eligible_women', 'anc',
+        'pdf_direct', 'pnc1', 'pnc2', 'child_under_2','post_delivery','imam_patient','cd_patient','surgery_patient','hypertension_screening','hypertension_screening_second_visit']]
+
+ #Output to a csv file
+ #=============================================================================
+me_indicators.to_csv('./Output/'+dt.datetime.today().strftime('%m-%d-%Y %H%M%S')+'.csv', index=False)
+logger.info("csv file generated")
+# =============================================================================
