@@ -1,0 +1,93 @@
+body {
+  background-color: white;
+}
+
+* {
+  font-family: Verdana, Geneva, sans-serif;
+  font-size: 14px;
+}
+
+h1 {
+  color: black;
+  text-align: center;
+  font-size: 25px;
+}
+
+h3 {
+  color: black;
+  text-align: left;
+  font-size: 18px;
+}
+
+p, #label {
+  font-size: 14px;
+}
+
+#col_list{
+  font-family: "Courier New", Courier, monospace;
+}
+
+div#form {
+  width: 80%;
+  background-color: #DADFF7;
+  padding: 10px;
+  margin: auto;
+  margin-bottom: 10px
+}
+
+.column {
+  float: left;
+}
+
+.left, .right {
+  width: 50%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+
+input[type=button], input[type=submit] {
+  background-color: #C14953;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+input[type=date] {
+  background-color: #495D63;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+
+div#choose_file {
+  padding:5px 10px;
+  width: 150px;
+  background:#5B6D72;
+  position:relative;
+  color:#fff;
+  text-align:center;
+  float:none;
+  cursor:pointer;
+}
+
+.hide_file {
+    position: absolute;
+    z-index: 1000;
+    opacity: 0;
+    cursor: pointer;
+    right: 0;
+    top: 0;
+    height: 100%;
+    font-size: 18px;
+    width: 100%;
+    margin:auto;
+}
