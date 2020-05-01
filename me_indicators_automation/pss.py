@@ -14,11 +14,14 @@ def clean(form):
     col_mapping = {"woman_ID":"person_id", "woman_at_home":"person_at_home"}
     form.rename_columns(col_mapping)
     form.strip_id()
+    form.filter_at_home()
     form.remove_duplicates()
 
 ## Pregnancy Screening
-def pss_metrics(file):
-    #filename = './Data/pregnancy_screening.csv'
+def pss_metrics(file, dt1, dt2):
+    #file = './Data/pregnancy_screening.csv'
+    #dt1 = '2020-01-01'
+    #dt2 = '2020-03-31'
     cols = ['chw_name','woman_at_home','woman_ID','last_visit','last_visit_nepali',
             'agrees_for_service','urine_test','urine_test_positive',
             'pregnancy_status','balanced_counseling.bcs_form.method_change',
@@ -26,6 +29,9 @@ def pss_metrics(file):
             'balanced_counseling.bcs_form.counseling.method_chosen1']
     pss = Form(file, cols)
     clean(pss)
+
+    #filter for data with last_visit date in the given date range, all indicators after this are based on this filtered data
+    pss.filter_by_date('last_visit', [dt1,dt2])
 
     pss.count_by_chw('elig_wm','person_id')
     pss.count_by_chw('rcvd_pss','person_id',['agrees_for_service',['yes']])

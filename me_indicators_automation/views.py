@@ -10,7 +10,7 @@ from me_indicators_automation import app
 from flask import Flask, render_template, request, make_response
 import pandas
 import os
-from me_indicators_automation import pss
+from me_indicators_automation import pss, pdf
 
 UPLOAD_FOLDER = './uploads'
 
@@ -22,11 +22,20 @@ def home():
     return render_template('home.html')
 
 @app.route('/pss', methods=['GET','POST'])
-def data():
+def pss_data():
     if request.method == "POST":
-        f = request.files['csvfile']
-        #f.save(os.path.join(app.config['UPLOAD_FOLDER'], 'csvfile.csv'))
-        data = pss.pss_metrics(f)
+        f = request.files['pss_csv']
+        data = pss.pss_metrics(f, request.form['from'], request.form['to'])
+        resp = make_response(data.to_csv())
+        resp.headers["Content-Disposition"] = "attachment; filename=export.csv"
+        resp.headers["Content-Type"] = "text/csv"
+    return resp
+
+@app.route('/pdf', methods=['GET','POST'])
+def pdf_data():
+    if request.method == "POST":
+        f = request.files['pdf_csv']
+        data = pdf.pdf_metrics(f, request.form['from'], request.form['to'])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=export.csv"
         resp.headers["Content-Type"] = "text/csv"
