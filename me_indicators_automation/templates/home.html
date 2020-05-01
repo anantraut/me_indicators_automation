@@ -2,26 +2,47 @@
 <html>
 <head>
   <title></title>
+  <link rel= "stylesheet" type= "text/css" href= "../static/styles/main.css">
 </head>
 <body>
+  <div id = "main">
   <h1>M&E Metrics generator</h1>
-  <h3>Pregnancy Screening</h3>
-  <form class="" action="pss" method="post" enctype="multipart/form-data">
-    <label for="csvfile">Select pregnancy screening csv file:</label>
-    <input type="file" name="csvfile" value="">
-    <input type ="submit" name="" value="Generate Metrics">
-    <p>NOTE: The csv file should include the following columns: 'chw_name','woman_at_home','woman_ID','last_visit','last_visit_nepali',
-              'agrees_for_service','urine_test','urine_test_positive',
-              'pregnancy_status','balanced_counseling.bcs_form.method_change',
-              'menopause','want_more_children', 'birth_gap', 'contraceptive_current',
-              'balanced_counseling.bcs_form.counseling.method_chosen1'</p>
-  </form>
-  <h3>ANC</h3>
-  <form class="" action="anc" method="post" enctype="multipart/form-data">
-    <label for="csvfile">Select ANC csv file:</label>
-    <input type="file" name="csvfile" value="">
-    <input type ="submit" name="" value="Generate Metrics">
-    <p>NOTE: The csv file should include the following columns: 'placeholder'</p>
-  </form>
+      <div id = "form" class = "row">
+        <div class ="column left">
+          <h3>Pregnancy Screening</h3>
+          <form class="" action="pss" method="post" enctype="multipart/form-data">
+            Select csv file
+            <input type="file" name="pss_csv" class = "hide_file" value="Select Pregnancy screening"><br>
+            <label id='label'>From</label>
+            <input type="date" name="from" value=""><label id='label'>to</label>
+            <input type="date" name="to" value=""><br>
+            <input type ="submit" name="submit" value="GENERATE">
+          </div>
+          <div class = "column right">
+        <p>The csv file should include the following columns: <p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
+          urine_test, urine_test_positive, pregnancy_status, balanced_counseling.bcs_form.method_change, menopause, want_more_children, birth_gap, contraceptive_current,
+          balanced_counseling.bcs_form.counseling.method_chosen1</p></p>
+        </div>
+      </form>
+    </div>
+    <div id = "form" class ="row">
+      <div class ="column left">
+      <h3>Post Delivery Form</h3>
+      <form class="" action="pdf" method="post" enctype="multipart/form-data">
+        <label for="pdf_csv">Select csv file:</label>
+        <input type="file" name="pdf_csv" value=""><br>
+        <label id='label'>From</label>
+        <input type="date" name="from" value=""><label id='label'>to</label>
+        <input type="date" name="to" value=""><br>
+        <input type ="submit" name="submit" value="GENERATE">
+      </div>
+      <div class ="column right">
+        <p>The csv file should include the following columns: <p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
+          child_one.birth_outcome1, child_two.birth_outcome2, child_three.birth_outcome3, child_one.baby_weight1, child_two.baby_weight2, child_three.baby_weight3,
+          pregnancy_outcome</p></p>
+      </div>
+      </form>
+    </div>
+  </div>
 </body>
 </html>
