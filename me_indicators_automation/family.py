@@ -10,16 +10,16 @@ Created on Wed Oct 30 16:01:07 2019
 from me_indicators_automation.case_form import CaseForm
 
 ## Family data
-def family_metrics(file):
+def family_metrics(file, content_type):
     #file = './Data/3. Family Enrollment Monthly report_Bhadra 2076.xlsx'
     cols = ['chw_name','familyID','family_head','last_modified_date','closed',
             'enrollment_complete','family_female_non_residents',
             'family_male_non_residents','family_female_residents','family_male_residents','residence_type']
-    family = CaseForm(file, cols)
+    family = CaseForm(filepath=file, cols=cols, filetype=content_type)
     
     family.strip_str('familyID')
     
-    family.drop_closed_cases()
+    family.filter_for_condition('closed', False) #Drop closed cases
     family.remove_duplicates(sort_by=['familyID', 'family_head', 'last_modified_date'],dupl_subset=['familyID', 'family_head'])
     
     family.df['residence_type'] = family.df['residence_type'].map({1:1,2:2,

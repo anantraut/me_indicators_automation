@@ -10,17 +10,17 @@ Created on Wed Oct 30 16:01:07 2019
 from me_indicators_automation.case_form import CaseForm
 
 ## Individual data
-def individual_metrics(file):
+def individual_metrics(file, content_type):
 
     file = './Data/4. Individual-Enrollment_Bhadra 2076.xlsx'
     cols = ['chw_name','name_text','individualID','last_modified_date','closed','eligible_woman',
             'anc','pdf_direct','pnc1','pnc2','child_under_2','post_delivery','imam_patient',
             'cd_patient','surgery_patient','hypertension_screening','hypertension_screening_second_visit']
-    individual = CaseForm(file, cols)
+    individual = CaseForm(filepath=file, cols=cols, filetype = content_type)
     
     individual.strip_str('individualID')
     
-    individual.drop_closed_cases()
+    individual.filter_for_condition('closed', False) #Drop closed cases
     individual.remove_duplicates(sort_by=['individualID', 'name_text', 'last_modified_date'],dupl_subset=['individualID', 'name_text'])
     
     individual.convert_to_Int64(['anc','pdf_direct','pnc1','pnc2','child_under_2'])

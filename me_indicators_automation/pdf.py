@@ -11,10 +11,10 @@ from me_indicators_automation.case_form import CaseForm
 def clean(form):
     col_mapping = {"woman_ID":"person_id"}
     form.rename_columns(col_mapping)
-    form.strip_id('person_id')
+    form.strip_str('person_id')
 
 ## Post Delivery Form
-def pdf_metrics(file, dt1, dt2):
+def pdf_metrics(file, dt1, dt2, content_type):
     #file = './Data/post_delivery_form.csv'
     #dt1 = '2020-01-01'
     #dt2 = '2020-03-31'
@@ -24,12 +24,13 @@ def pdf_metrics(file, dt1, dt2):
             'pregnancy_outcome']
     #woman_at_home does not exist
 
-    pdf = CaseForm(file, cols)
+    pdf = CaseForm(filepath=file, cols=cols, filetype=content_type)
     clean(pdf)
 
-    df2 = pdf.df #df2 is created only to calculate ppw_visited (post partum women visited based on last_visit in date range)
-    df2 = df2.sort_values(['person_id','last_visit'],ascending = True).drop_duplicates('person_id', keep='last')
-    pdf.count_by_chw_with_df(df2[(df2['last_visit']>=dt1) & (df2['last_visit']<=dt2)], 'ppw_visited','person_id')
+    pdf_ppw_visited = CaseForm() #pdf_ppw_vis is created only to calculate ppw_visited (post partum women visited based on last_visit in date range)
+    pdf_ppw_visited.df = pdf.df
+    pdf_ppw_visited.remove_duplicates(sort_by=['person_id', 'last_visit'],dupl_subset=['person_id'])
+    pdf_ppw_visited.filter_by_date('last_visit', [dt1,dt2])
 
     #filter for data with delivery date in the given date range, all indicators after this are based on this filtered data
     pdf.filter_by_date('delivery_date_pdf', [dt1,dt2])
@@ -56,7 +57,9 @@ def pdf_metrics(file, dt1, dt2):
     pdf.count_by_chw_num_condition('low_birth_wt3','person_id',['child_three.baby_weight3','<',2.5])
     pdf.add_columns('low_birth_wt',['low_birth_wt1', 'low_birth_wt2', 'low_birth_wt3'])
 
-    pdf.count_by_chw_with_df(pdf.df[pdf.df['pregnancy_outcome']=='intended_abortion'], 'safe_abortions','person_id',['delivery_location',['primary_health_center',
+    pdf.filter_for_condition('pregnancy_outcome','intended_abortion')
+    
+    pdf.count_by_chw('safe_abortions','person_id',['delivery_location',['primary_health_center',
            'nyaya_health_hospital', 'district_hospital']])
 
-    return pdf.results
+    return pdf.concat_dataframes([pdf.results, pdf_ppw_visited.results])

@@ -8,7 +8,7 @@ Created on Thu Apr 23 19:56:07 2020
 
 from me_indicators_automation import app
 from flask import Flask, render_template, request, make_response
-from me_indicators_automation import pss, pdf, house, family, individual
+from me_indicators_automation import pss, pdf, house, family, individual, anc
 
 UPLOAD_FOLDER = './uploads'
 
@@ -23,7 +23,7 @@ def home():
 def pss_data():
     if request.method == "POST":
         f = request.files['pss_file']
-        data = pss.pss_metrics(f, request.form['from'], request.form['to'])
+        data = pss.pss_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=pss_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -33,7 +33,7 @@ def pss_data():
 def pdf_data():
     if request.method == "POST":
         f = request.files['pdf_file']
-        data = pdf.pdf_metrics(f, request.form['from'], request.form['to'])
+        data = pdf.pdf_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=pdf_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -43,7 +43,7 @@ def pdf_data():
 def house_data():
     if request.method == "POST":
         f = request.files['house_file']
-        data = house.house_metrics(f)
+        data = house.house_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=house_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -53,7 +53,7 @@ def house_data():
 def family_data():
     if request.method == "POST":
         f = request.files['family_file']
-        data = family.family_metrics(f)
+        data = family.family_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=family_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -63,9 +63,19 @@ def family_data():
 def individual_data():
     if request.method == "POST":
         f = request.files['individual_file']
-        data = individual.pdf_metrics(f)
+        data = individual.pdf_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=individual_metrics.csv"
+        resp.headers["Content-Type"] = "text/csv"
+    return resp
+
+@app.route('/anc', methods=['GET','POST'])
+def anc_data():
+    if request.method == "POST":
+        f = request.files['anc_file']
+        data = anc.anc_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
+        resp = make_response(data.to_csv())
+        resp.headers["Content-Disposition"] = "attachment; filename=anc_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
     return resp
 

@@ -6,29 +6,27 @@ Created on Thu Apr 23 14:22:07 2020
 @author: anant
 """
 
-from me_indicators_automation.case_form import CaseForm
+import pandas as pd
+from me_indicators_automation.form import Form
+import datetime as dt
 
 def clean(form):
     col_mapping = {"woman_ID":"person_id", "woman_at_home":"person_at_home"}
     form.rename_columns(col_mapping)
-    form.strip_str('person_id')
-    form.filter_for_condition('person_at_home', 'yes') #Filter for person_at_home == yes
+    form.strip_id()
+    form.only_at_home()
+    form.remove_duplicates()
 
 ## Pregnancy Screening
-def pss_metrics(file, dt1, dt2, content_type):
-    #file = './Data/pregnancy_screening.excel'
-    #dt1 = '2020-01-01'
-    #dt2 = '2020-03-31'
+def pss_metrics(file):
+    #filename = './Data/pregnancy_screening.csv'
     cols = ['chw_name','woman_at_home','woman_ID','last_visit','last_visit_nepali',
             'agrees_for_service','urine_test','urine_test_positive',
             'pregnancy_status','balanced_counseling.bcs_form.method_change',
             'menopause','want_more_children', 'birth_gap', 'contraceptive_current',
             'balanced_counseling.bcs_form.counseling.method_chosen1']
-    pss = CaseForm(filepath=file, cols=cols, filetype = content_type)
+    pss = Form(file, cols)
     clean(pss)
-    
-    pss.filter_by_date('last_visit', [dt1,dt2])
-    pss.remove_duplicates(sort_by=['person_id', 'last_visit'],dupl_subset=['person_id'])
 
     pss.count_by_chw('elig_wm','person_id')
     pss.count_by_chw('rcvd_pss','person_id',['agrees_for_service',['yes']])
@@ -46,4 +44,5 @@ def pss_metrics(file, dt1, dt2, content_type):
     pss.count_by_chw('iud','person_id',['contraceptive_current',['iud']])
     pss.count_by_chw('implants','person_id',['contraceptive_current',['implants']])
     pss.count_by_chw('refer','person_id',['contraceptive_current',['implants']])
+    #pss.results.to_csv('./uploads/'+dt.datetime.today().strftime('%m-%d-%Y %H%M%S')+'.csv', index=True)
     return pss.results

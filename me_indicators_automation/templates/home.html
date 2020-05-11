@@ -9,80 +9,100 @@
     <h1>M&E Metrics generator</h1>
     <div id = "form" class = "row">
       <div class ="column left">
-        <h3>Household case metrics</h3>
+        <h3>CASE: Household metrics</h3>
         <form class="" action="house" method="post" enctype="multipart/form-data">
-          Select excel file
-          <input type="file" name="house_file" value="" required><br>
+          Select csv or xlsx file
+          <input type="file" name="house_file" value="" required><br><br>
           <input type ="submit" name="submit" value="GENERATE">
         </form>
       </div>
       <div class = "column right">
-        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, houseID, 
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, houseID, 
         house_name, has_plate, last_modified_date, closed</p></p>
       </div>
     </div>
     <div id = "form" class = "row">
       <div class ="column left">
-        <h3>Family case metrics</h3>
+        <h3>CASE: Family metrics</h3>
         <form class="" action="family" method="post" enctype="multipart/form-data">
-          Select excel file
-          <input type="file" name="family_file" value="" required><br>
+          Select csv or xlsx file
+          <input type="file" name="family_file" value="" required><br><br>
           <input type ="submit" name="submit" value="GENERATE">
         </form>
       </div>
       <div class = "column right">
-        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, familyID, family_head, 
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, familyID, family_head, 
         last_modified_date, closed, enrollment_complete, family_female_non_residents, family_male_non_residents, family_female_residents, 
         family_male_residents, residence_type</p></p>
       </div>
     </div>
     <div id = "form" class = "row">
       <div class ="column left">
-        <h3>Individual case metrics</h3>
+        <h3>CASE: Individual metrics</h3>
         <form class="" action="individual" method="post" enctype="multipart/form-data">
-          Select excel file
-          <input type="file" name="individual_file" value="" required><br>
+          Select csv or xlsx file
+          <input type="file" name="individual_file" value="" required><br><br>
           <input type ="submit" name="submit" value="GENERATE">
         </form>
       </div>
       <div class = "column right">
-        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, name_text, individualID, 
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, name_text, individualID, 
         last_modified_date, closed, eligible_woman, anc, pdf_direct, pnc1, pnc2, child_under_2, post_delivery, imam_patient, cd_patient, 
         surgery_patient, hypertension_screening, hypertension_screening_second_visit</p></p>
       </div>
     </div>
     <div id = "form" class = "row">
       <div class ="column left">
-        <h3>Pregnancy Screening</h3>
+        <h3>FORM: Pregnancy Screening</h3>
         <form class="" action="pss" method="post" enctype="multipart/form-data">
-          Select excel file
+          Select csv or xlsx file
           <input type="file" name="pss_file" value="" required><br>
           <label id='label'>From</label>
           <input type="date" name="from" value="2020-01-01" required><label id='label'>to</label>
-          <input type="date" name="to" value="2020-04-30" required><br>
+          <input type="date" name="to" value="2020-04-30" required><br><br>
           <input type ="submit" name="submit" value="GENERATE">
         </form>
       </div>
       <div class = "column right">
-        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
           urine_test, urine_test_positive, pregnancy_status, balanced_counseling.bcs_form.method_change, menopause, want_more_children, birth_gap, contraceptive_current,
           balanced_counseling.bcs_form.counseling.method_chosen1</p></p>
       </div>
     </div>
+    <div id = "form" class = "row">
+      <div class ="column left">
+        <h3>FORM: ANC Counseling</h3>
+        <form class="" action="anc" method="post" enctype="multipart/form-data">
+          Select csv or xlsx file
+          <input type="file" name="anc_file" value="" required><br>
+          <label id='label'>From</label>
+          <input type="date" name="from" value="2020-01-01" required><label id='label'>to</label>
+          <input type="date" name="to" value="2020-04-30" required><br><br>
+          <input type ="submit" name="submit" value="GENERATE">
+        </form>
+      </div>
+      <div class = "column right">
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_at_home, visit_type, woman_ID, followup.pregnancy_status, 
+            agrees_for_service, last_visit, labs_complete, record_usg_findings, usg_complete, high_risk_vdrl, high_risk.high_risk_urine_sugar, high_risk_hcv, high_risk.high_risk_hiv, 
+            high_risk_rh_negative, high_risk_hbsag, high_risk_anemia, high_risk_urine_protein, high_risk_placenta_previa, high_risk_fetal_presentation, high_risk_no_of_fetus, 
+            high_risk, anc_visit1_month, anc_visit2_month, anc_visit3_month, anc_visit4_month, anc_visit5_month, anc_visit6_month, anc_visit7_month, anc_visit8_month, anc_visit9_month, 
+            anc_visit10_month, lmp_group.weeks_pregnant, immun-meds.albendazole_taken, immun-meds.daily_iron, immun-meds.tt_actual_first_dose</p></p>
+      </div>
+    </div>
     <div id = "form" class ="row">
       <div class ="column left">
-        <h3>Post Delivery Form</h3>
+        <h3>FORM: Post Delivery Form</h3>
         <form class="" action="pdf" method="post" enctype="multipart/form-data">
-          Select excel file
+          Select csv or xlsx file
           <input type="file" name="pdf_file" value="" required><br>
           <label id='label'>From</label>
           <input type="date" name="from" value="2020-01-01" required><label id='label'>to</label>
-          <input type="date" name="to" value="2020-04-30" required><br>
+          <input type="date" name="to" value="2020-04-30" required><br><br>
           <input type ="submit" name="submit" value="GENERATE">
         </form>
       </div>
       <div class ="column right">
-        <p>The excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
+        <p>The csv or excel file must have data in the first tab with the following columns:<p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
         child_one.birth_outcome1, child_two.birth_outcome2, child_three.birth_outcome3, child_one.baby_weight1, child_two.baby_weight2, child_three.baby_weight3,
         pregnancy_outcome</p></p>
       </div>
