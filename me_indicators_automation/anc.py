@@ -14,7 +14,7 @@ def clean(form):
     form.strip_str('person_id')
 
 ## Pregnancy Screening
-def anc_metrics(file, dt1, dt2, content_type):
+def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv'):
     
     #file = './Data/6. ANC_data_Magh_2076.xlsx'
     #dt1 = '2020-01-01'
@@ -145,4 +145,5 @@ def anc_metrics(file, dt1, dt2, content_type):
     anc_proto.count_by_chw('tt_first_dose', 'person_id', ['immun-meds.tt_actual_first_dose', ['yes']])
     
     anc.results = anc.concat_dataframes([anc_home.results, anc_group.results, anc_proto.results])
+    print(dt1, " - ", dt2)
     return anc.results

@@ -13,10 +13,57 @@ h1 {
   font-size: 25px;
 }
 
+/* Style the button that is used to open and close the collapsible content */
+.collapsible {
+  background-color: #495D63;
+  color: white;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  font-size: 15px;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .collapsible:hover {
+  background-color: #555;
+}
+
+/* Style the collapsible content. Note: hidden by default */
+.content {
+  padding: 0 18px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+  background-color: #DADFF7;
+  margin-bottom: 2px;
+  width: 100%;
+}
+
+.collapsible:after {
+  content: '\002B'; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: white;
+  float: right;
+  margin-left: 20px;
+}
+
+.active:after {
+  content: '\2212'; /* Unicode character for "minus" sign (-) */
+  color: white;
+}
+
 h3 {
   color: black;
   text-align: left;
   font-size: 18px;
+}
+
+h4 {
+  color: black;
+  text-align: left;
+  font-size: 14px;
 }
 
 p, #label {
@@ -25,69 +72,4 @@ p, #label {
 
 #col_list{
   font-family: "Courier New", Courier, monospace;
-}
-
-div#form {
-  width: 80%;
-  background-color: #DADFF7;
-  padding: 10px;
-  margin: auto;
-  margin-bottom: 10px
-}
-
-.column {
-  float: left;
-}
-
-.left, .right {
-  width: 50%;
-}
-
-.row:after {
-  content: "";
-  display: table;
-  clear: both;
-
-input[type=button], input[type=submit] {
-  background-color: #C14953;
-  border: none;
-  color: green;
-  padding: 5px 10px;
-  text-decoration: none;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-
-input[type=date] {
-  background-color: #495D63;
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  text-decoration: none;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-
-div#choose_file {
-  padding:5px 10px;
-  width: 150px;
-  background:#5B6D72;
-  position:relative;
-  color:#fff;
-  text-align:center;
-  float:none;
-  cursor:pointer;
-}
-
-.hide_file {
-    position: absolute;
-    z-index: 1000;
-    opacity: 0;
-    cursor: pointer;
-    right: 0;
-    top: 0;
-    height: 100%;
-    font-size: 18px;
-    width: 100%;
-    margin:auto;
 }

@@ -14,7 +14,7 @@ def clean(form):
     form.strip_str('person_id')
 
 ## Post Delivery Form
-def pdf_metrics(file, dt1, dt2, content_type):
+def pdf_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv'):
     #file = './Data/post_delivery_form.csv'
     #dt1 = '2020-01-01'
     #dt2 = '2020-03-31'

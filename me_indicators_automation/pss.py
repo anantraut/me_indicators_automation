@@ -15,7 +15,7 @@ def clean(form):
     form.filter_for_condition('person_at_home', 'yes') #Filter for person_at_home == yes
 
 ## Pregnancy Screening
-def pss_metrics(file, dt1, dt2, content_type):
+def pss_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv'):
     #file = './Data/pregnancy_screening.excel'
     #dt1 = '2020-01-01'
     #dt2 = '2020-03-31'

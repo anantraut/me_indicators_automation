@@ -23,7 +23,10 @@ def home():
 def pss_data():
     if request.method == "POST":
         f = request.files['pss_file']
-        data = pss.pss_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
+        if request.form.getlist('date_checkbox')[0] == 'on':
+            data = pss.pss_metrics(f, dt1=request.form['from'], dt2=request.form['to'], content_type=f.headers["Content-Type"])
+        else:
+            data = pss.pss_metrics(f, content_type=f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=pss_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -33,7 +36,10 @@ def pss_data():
 def pdf_data():
     if request.method == "POST":
         f = request.files['pdf_file']
-        data = pdf.pdf_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
+        if request.form.getlist('date_checkbox')[0] == 'on':
+            data = pdf.pdf_metrics(f, dt1=request.form['from'], dt2=request.form['to'], content_type=f.headers["Content-Type"])
+        else:
+            data = pdf.pdf_metrics(f, content_type=f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=pdf_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
@@ -53,6 +59,7 @@ def house_data():
 def family_data():
     if request.method == "POST":
         f = request.files['family_file']
+        print(request.form['date_checkbox'])
         data = family.family_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=family_metrics.csv"
@@ -73,7 +80,10 @@ def individual_data():
 def anc_data():
     if request.method == "POST":
         f = request.files['anc_file']
-        data = anc.anc_metrics(f, request.form['from'], request.form['to'], f.headers["Content-Type"])
+        if 'date_checkbox' in request.form:
+            data = anc.anc_metrics(f, dt1=request.form['from'], dt2=request.form['to'], content_type=f.headers["Content-Type"])
+        else:
+            data = anc.anc_metrics(f, content_type=f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=anc_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
