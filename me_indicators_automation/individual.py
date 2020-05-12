@@ -12,7 +12,7 @@ from me_indicators_automation.case_form import CaseForm
 ## Individual data
 def individual_metrics(file, content_type):
 
-    file = './Data/4. Individual-Enrollment_Bhadra 2076.xlsx'
+    #file = './Data/4. Individual-Enrollment_Bhadra 2076.xlsx'
     cols = ['chw_name','name_text','individualID','last_modified_date','closed','eligible_woman',
             'anc','pdf_direct','pnc1','pnc2','child_under_2','post_delivery','imam_patient',
             'cd_patient','surgery_patient','hypertension_screening','hypertension_screening_second_visit']

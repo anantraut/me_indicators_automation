@@ -63,7 +63,7 @@ def family_data():
 def individual_data():
     if request.method == "POST":
         f = request.files['individual_file']
-        data = individual.pdf_metrics(f, f.headers["Content-Type"])
+        data = individual.individual_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=individual_metrics.csv"
         resp.headers["Content-Type"] = "text/csv"
