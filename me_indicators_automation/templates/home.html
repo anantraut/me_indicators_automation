@@ -1,10 +1,23 @@
 <!DOCTYPE html>
 <html>
    <head>
-      <title></title>
+      <title>M&E Metrics Generator</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
       <link rel= "stylesheet" type= "text/css" href= "../static/styles/main.css">
       <link rel= "stylesheet" type= "text/css" href= "../static/styles/css/bootstrap.min.css">
       <script src="../static/styles/js/bootstrap.min.js"></script>
+      <script>
+      function toggleFormElements(id) {
+          if (document.getElementById(id+"_check").checked == true) {
+              document.getElementById(id+"_from").disabled = false;
+              document.getElementById(id+"_to").disabled = false;
+            } else {
+               document.getElementById(id+"_from").disabled = true;
+               document.getElementById(id+"_to").disabled = true;
+            }
+        }
+      </script>
+      
    </head>
    <body>
       <div class="container">
@@ -12,8 +25,8 @@
          
          <button type="button" class="collapsible">CASE: Household Metrics</button>
          <div class="content">
-            <div class = "form-group row">
-               <div class="col">
+            <div class = "row row-h">
+               <div class="col-5">
                   <br>
                   <form class="" action="house" method="post" enctype="multipart/form-data">
                      <p>Upload csv/xlsx file with raw data:</p>
@@ -21,20 +34,32 @@
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class="col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:
-                  <p id = 'col_list'>chw_name, houseID, 
-                     house_name, has_plate, last_modified_date, closed
-                  </p>
-                  </p>   
+               <div class="col-7 hrz-txt-scroll">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong>Algorithm</strong><br>
+                 <ol style="font-size: 10px">
+                   <li>Clean identifier by removing any spaces from <code>houseID</code>
+                   <li>Filter for rows where <code>closed</code> = 'False'
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>houseID</code>, <code>house_name</code> & <code>last_modified_date</code>
+                     <li>Drop duplicates for <code>houseID</code> & <code>house_name</code>, keeping last row
+                   </ul>
+                   <li><kbd>has_plate</kbd> is count of <code>houseID</code>s where <code>has_plate</code> = 'yes'
+                   <li><kbd>no_plate</kbd> is count of <code>houseID</code>s where <code>has_plate</code> = 'no'
+                 </ol>
                </div>
             </div>
          </div>
          
          <button type="button" class="collapsible">CASE: Family Metrics</button>
          <div class="content">
-            <div class="row">
-               <div class ="col">
+            <div class="row row-h">
+               <div class ="col-5">
                   <br>
                   <form class="" action="family" method="post" enctype="multipart/form-data">
                      <p>Upload csv/xlsx file with raw data:</p>
@@ -42,21 +67,39 @@
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class = "col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:
-                  <p id = 'col_list'>chw_name, familyID, family_head, 
-                     last_modified_date, closed, enrollment_complete, family_female_non_residents, family_male_non_residents, family_female_residents, 
-                     family_male_residents, residence_type
-                  </p>
-                  </p>
+               <div class="col-7 hrz-txt-scroll">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong>Algorithm</strong><br>
+                 <ol>
+                   <li>Clean identifier by removing any spaces from <code>familyID</code>
+                   <li>Filter for rows where <code>closed</code> is 'False'
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>familyID</code>, <code>family_head</code> & <code>last_modified_date</code>
+                     <li>Drop duplicates for <code>familyID</code> & <code>family_head</code>, keeping last row
+                   </ul>
+                   <li>Map <code>residence_type</code> values to '1', '2' & '3' for uniformity
+                   <li><kbd>enroll_cmplt</kbd> is count of <code>familyID</code>s where <code>enrollment_complete</code> = 'yes'
+                   <li><kbd>enroll_not_cmplt</kbd> is count of <code>familyID</code>s where <code>enrollment_complete</code> is 'no'
+                   <li><kbd>Single</kbd> is count of <code>familyID</code>s where <code>residence_type</code> = 1
+                   <li><kbd>Primary</kbd> is count of <code>familyID</code>s where <code>residence_type</code> = 2
+                   <li><kbd>Secondary</kbd> is count of <code>familyID</code>s where <code>residence_type</code> = 3
+                   <li><kbd>fam_regd</kbd> is count of <code>familyID</code>s 
+                   <li><kbd>tot_male</kbd> is sum of <code>family_male_residents</code> & <code>family_male_non_residents</code>
+                   <li><kbd>tot_fem</kbd> is sum of <code>family_female_residents</code> & <code>family_female_non_residents</code>
+                 </ol>
                </div>
             </div>
          </div>
          
          <button type="button" class="collapsible">CASE: Individual Metrics</button>
          <div class="content">
-            <div class = "row">
-               <div class ="col">
+            <div class = "row row-h">
+               <div class ="col-5">
                   <br>
                   <form class="" action="individual" method="post" enctype="multipart/form-data">
                      <p>Upload csv/xlsx file with raw data:</p>
@@ -64,21 +107,49 @@
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class = "col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:
-                  <p id = 'col_list'>chw_name, name_text, individualID, 
-                     last_modified_date, closed, eligible_woman, anc, pdf_direct, pnc1, pnc2, child_under_2, post_delivery, imam_patient, cd_patient, 
-                     surgery_patient, hypertension_screening, hypertension_screening_second_visit
-                  </p>
-                  </p>
+               <div class="col-7 hrz-txt-scroll">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong>Algorithm</strong><br>
+                 <ol>
+                   <li>Clean identifier by removing any spaces from <code>individualID</code>
+                   <li>Filter for rows where <code>closed</code> is 'False'
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>individualID</code>, <code>name_text</code> & <code>last_modified_date</code>
+                     <li>Drop duplicates for <code>individualID</code> & <code>family_head</code>, keeping last row
+                   </ul>
+                   <li><kbd>ind_regd</kbd> is count of <code>individualID</code>s
+                   <li><kbd>elig_women</kbd> is sum of <code>eligible_woman</code>
+                   <li><kbd>anc</kbd> is sum of <code>anc</code>
+                   <li><kbd>pdf_direct</kbd> is sum of <code>pdf_direct</code>
+                   <li><kbd>pnc1</kbd> is sum of <code>pnc1</code>
+                   <li><kbd>pnc2</kbd> is sum of <code>pnc2</code>
+                   <li><kbd>u2_child</kbd> is sum of <code>child_under_2</code>
+                   <li><kbd>post_deliv</kbd> is sum of <code>post_delivery</code>
+                   <li><kbd>imam</kbd> is sum of <code>imam_patient</code>
+                   <li><kbd>cd</kbd> is sum of <code>cd_patient</code>
+                   <li><kbd>surgery</kbd> is sum of <code>surgery_patient</code>
+                   <li><kbd>htn_scrn</kbd> is sum of <code>hypertension_screening</code>
+                   <li><kbd>htn_2nd_scrn</kbd> is sum of <code>hypertension_screening_second_visit</code>
+                   <li><kbd>recv_service</kbd> is count of <code>individualID</code>s where <code>eligible_woman</code>, 
+                   <code>anc</code>,<code>pdf_direct</code>,<code>pnc1</code>,
+                   <code>pnc2</code>,<code>child_under_2</code>,
+                   <code>post_delivery</code>,<code>imam_patient</code>,
+                   <code>cd_patient</code>,<code>surgery_patient</code>,<code>hypertension_screening</code>, or
+                   <code>hypertension_screening_second_visit</code> is greater than 0
+                 </ol>
                </div>
             </div>
          </div>
          
          <button type="button" class="collapsible">FORM: Pregnancy Screening</button>
          <div class="content">
-            <div class = "row">
-               <div class ="col">
+            <div class = "row row-h">
+               <div class ="col-5">
                   <br>
                   <form class="" action="pss" method="post" enctype="multipart/form-data">
                      <p>Upload csv/xlsx file with raw data:</p>
@@ -86,34 +157,59 @@
                      <div class="input-group mb-3">
                         <div class="input-group-prepend">
                            <div class="input-group-text">
-                              <input type="checkbox" name="date_checkbox">
+                              <input type="checkbox" name="date_checkbox" id="pss_check" onclick="toggleFormElements('pss')">
                            </div>
-                           <span class="input-group-text">From</span>
                         </div>
-                        <input type="date" name="from" class="form-control" value="2020-01-01" required">
+                        <input type="date" name="from" class="form-control" id="pss_from" required disabled>
                         <div class="input-group-prepend">
-                           <span class="input-group-text">To</span>
+                           <span class="input-group-text">to</span>
                         </div>
-                        <input type="date" name="to" class="form-control" value="2020-04-30" required>
+                        <input type="date" name="to" class="form-control" id="pss_to" required disabled>
                      </div>
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class = "col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:
-                  <p id = 'col_list'>chw_name, woman_at_home, woman_ID, last_visit, last_visit_nepali, agrees_for_service,
-                     urine_test, urine_test_positive, pregnancy_status, balanced_counseling.bcs_form.method_change, menopause, want_more_children, birth_gap, contraceptive_current,
-                     balanced_counseling.bcs_form.counseling.method_chosen1
-                  </p>
-                  </p>
+               <div class="col-7 hrz-txt-scroll" style="width: 500px">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong>Algorithm</strong><br>
+                 <ol>
+                   <li>Clean identifier by removing any spaces from <code>woman_ID</code>
+                   <li>Filter for rows where <code>woman_at_home</code> is 'yes'
+                   <li>Filter for rows where <code>last_visit</code> is between the dates provided by user in the form
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>woman_ID</code> & <code>last_visit</code>
+                     <li>Drop duplicates for <code>woman_ID</code>, keeping last row
+                   </ul>
+                   <li><kbd>elig_wm</kbd> is count of <code>woman_ID</code>
+                   <li><kbd>rcvd_pss</kbd> is count of <code>woman_ID</code>s where <code>agrees_for_service</code> = 'yes'
+                   <li><kbd>upt_done</kbd> is count of <code>woman_ID</code>s where <code>urine_test</code> is 'positive','negative','indetermined' or 'test_malfunctioning'
+                   <li><kbd>upt_pos</kbd> is count of <code>woman_ID</code>s where <code>urine_test</code> = 'positive'
+                   <li><kbd>new_preg</kbd> is count of <code>woman_ID</code>s where <code>pregnancy_status</code> = 'pregnant'
+                   <li><kbd>bcs_agree</kbd> is count of <code>woman_ID</code>s where <code>balanced_counseling.bcs_form.method_change</code> = 'yes'
+                   <li><kbd>menop</kbd> is count of <code>woman_ID</code>s where <code>menopause</code> = 'yes'
+                   <li><kbd>more_child</kbd> is count of <code>woman_ID</code>s where <code>want_more_children</code> = 'yes'
+                   <li><kbd>birth_gap</kbd> is count of <code>woman_ID</code>s where <code>birth_gap</code> = 'two_or_more_years'
+                   <li><kbd>hystectomy</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> ='hystectomy'
+                   <li><kbd>sterilization</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> = 'male_sterilization'
+                   <li><kbd>pills</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> = 'pills'
+                   <li><kbd>dipo</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> = 'Dipo'
+                   <li><kbd>iud</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> = 'iud'
+                   <li><kbd>implants</kbd> is count of <code>woman_ID</code>s where <code>contraceptive_current</code> = 'implants'
+                   <li><kbd>refer</kbd> needs to be fixed
+                 </ol>
                </div>
             </div>
          </div>
          
          <button type="button" class="collapsible">FORM: ANC Counseling</button>
          <div class="content">
-            <div class = "row">
-               <div class ="col">
+            <div class = "row row-h">
+               <div class ="col-5">
                   <br>
                   <form class="" action="anc" method="post" enctype="multipart/form-data">
                      <p>Upload csv/xlsx file with raw data:</p>
@@ -121,69 +217,158 @@
                      <div class="input-group mb-3">
                         <div class="input-group-prepend">
                            <div class="input-group-text">
-                              <input type="checkbox" name="date_checkbox">
+                              <input type="checkbox" name="date_checkbox" id="anc_check" onclick="toggleFormElements('anc')">
                            </div>
-                           <span class="input-group-text">From</span>
                         </div>
-                        <input type="date" name="from" class="form-control" value="2020-01-01" required">
+                        <input type="date" name="from" class="form-control" id="anc_from" required disabled>
                         <div class="input-group-prepend">
-                           <span class="input-group-text">To</span>
+                           <span class="input-group-text">to</span>
                         </div>
-                        <input type="date" name="to" class="form-control" value="2020-04-30" required>
+                        <input type="date" name="to" class="form-control" id="anc_to" required disabled>
                      </div>
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class = "col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:</p>
-                  <p id = 'col_list'>chw_name, woman_at_home, visit_type, woman_ID, followup.pregnancy_status, 
-                     agrees_for_service, last_visit, labs_complete, record_usg_findings, usg_complete, high_risk_vdrl, high_risk.high_risk_urine_sugar, high_risk_hcv, high_risk.high_risk_hiv, 
-                     high_risk_rh_negative, high_risk_hbsag, high_risk_anemia, high_risk_urine_protein, high_risk_placenta_previa, high_risk_fetal_presentation, high_risk_no_of_fetus, 
-                     high_risk, anc_visit1_month, anc_visit2_month, anc_visit3_month, anc_visit4_month, anc_visit5_month, anc_visit6_month, anc_visit7_month, anc_visit8_month, anc_visit9_month, 
-                     anc_visit10_month, lmp_group.weeks_pregnant, immun-meds.albendazole_taken, immun-meds.daily_iron, immun-meds.tt_actual_first_dose
-                  </p>
-                  </p>
+               <div class="col-7 hrz-txt-scroll">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong><u>Algorithm</u></strong><br>
+                 <ol>
+                   <li>Clean identifier by removing any spaces from <code>woman_ID</code>
+                   <li>Filter for rows where <code>last_visit</code> is between the dates provided
+                 </ol>
+                 <strong>A. Branch I</strong>
+                 <ol start=3>
+                   <li>Filter for rows where <code>visit_type</code> is 'home'
+                   <li>Keep only rows where <code>followup.pregnancy_status</code> is 'No'
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>woman_ID</code>, <code>person_at_home</code> & <code>last_visit</code>
+                     <li>Drop duplicates for <code>woman_ID</code>, keeping last row
+                   </ul>
+                   <li><kbd>home_visit_yes</kbd> is count of <code>woman_ID</code>s where <code>woman_at_home</code> = 'yes'
+                   <li><kbd>home_visit_no</kbd> is count of <code>woman_ID</code>s where <code>woman_at_home</code> = 'no'
+                   <li><kbd>agrees_for_service_yes</kbd> is count of <code>woman_ID</code>s where <code>agrees_for_service</code> = 'yes'
+                   <li><kbd>agrees_for_service_no</kbd> is count of <code>woman_ID</code>s where <code>agrees_for_service</code> = 'no'
+                   <li>Filter for rows where <code>agrees_for_service</code> is 'yes'
+                   <li><kbd>labs_complete</kbd> is count of <code>woman_ID</code>s where <code>labs_complete</code> = 'yes'
+                   <li><kbd>record_usg_findings</kbd> is count of <code>woman_ID</code>s where <code>record_usg_findings</code> = 'yes'
+                   <li><kbd>usg_complete</kbd> is count of <code>woman_ID</code>s where <code>usg_complete</code> = 'yes'
+                   <li><kbd>lab_high_risk</kbd> is count of <code>woman_ID</code>s where <code>high_risk_vdrl</code>, <code>high_risk.high_risk_urine_sugar</code>,
+                    <code>high_risk_hcv</code>, <code>high_risk.high_risk_hiv</code>, <code>high_risk_rh_negative</code>, <code>high_risk_hbsag</code>,
+                     <code>high_risk_anemia</code>, or <code>high_risk_urine_protein</code> = 'yes'
+                   <li><kbd>USG_high_risk</kbd> is count of <code>woman_ID</code>s where <code>high_risk_placenta_previa</code>,
+                    <code>high_risk_fetal_presentation</code>, or <code>high_risk_no_of_fetus</code> = 'yes'
+                   <li><kbd>high_risk</kbd> is count of <code>woman_ID</code>s where <code>high_risk</code> = '1'
+                 </ol>
+                 <strong>B. Branch II</strong>
+                 <ol start=3>
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>woman_ID</code>, <code>person_at_home</code> & <code>last_visit</code>
+                     <li>Drop duplicates for <code>woman_ID</code>, keeping last row
+                   </ul>
+                   <li><kbd>4th_complete</kbd> is count of <code>woman_ID</code>s where <code>anc_visit1_month</code>, <code>anc_visit2_month</code>,
+                    <code>anc_visit3_month</code>, <code>anc_visit4_month</code>, <code>anc_visit5_month</code>, <code>anc_visit6_month</code>,
+                     <code>anc_visit7_month</code>, <code>anc_visit8_month</code>, <code>anc_visit9_month</code>, or <code>anc_visit10_month</code> = '4'
+                   <li><kbd>6th_complete</kbd> is count of <code>woman_ID</code>s where <code>anc_visit1_month</code>, <code>anc_visit2_month</code>,
+                    <code>anc_visit3_month</code>, <code>anc_visit4_month</code>, <code>anc_visit5_month</code>, <code>anc_visit6_month</code>,
+                     <code>anc_visit7_month</code>, <code>anc_visit8_month</code>, <code>anc_visit9_month</code>, or <code>anc_visit10_month</code> = '6'
+                   <li><kbd>8th_complete</kbd> is count of <code>woman_ID</code>s where <code>anc_visit1_month</code>, <code>anc_visit2_month</code>,
+                    <code>anc_visit3_month</code>, <code>anc_visit4_month</code>, <code>anc_visit5_month</code>, <code>anc_visit6_month</code>,
+                     <code>anc_visit7_month</code>, <code>anc_visit8_month</code>, <code>anc_visit9_month</code>, or <code>anc_visit10_month</code> = '8'
+                   <li><kbd>9th_complete</kbd> is count of <code>woman_ID</code>s where <code>anc_visit1_month</code>, <code>anc_visit2_month</code>,
+                    <code>anc_visit3_month</code>, <code>anc_visit4_month</code>, <code>anc_visit5_month</code>, <code>anc_visit6_month</code>,
+                     <code>anc_visit7_month</code>, <code>anc_visit8_month</code>, <code>anc_visit9_month</code>, or <code>anc_visit10_month</code> = '9'
+                   <li><kbd>Proto_vis_cmplt</kbd> is count of <code>woman_ID</code>s where <code>anc_visit1_month</code>, <code>anc_visit2_month</code>,
+                    <code>anc_visit3_month</code>, <code>anc_visit4_month</code>, <code>anc_visit5_month</code>, <code>anc_visit6_month</code>,
+                     <code>anc_visit7_month</code>, <code>anc_visit8_month</code>, <code>anc_visit9_month</code>, or <code>anc_visit10_month</code> = '4', '6', '8', or '9'
+                   <li><kbd>anc_edd_mnth</kbd> is count of <code>woman_ID</code>s where <code>lmp_group.weeks_pregnant</code> = '36'
+                   <li><kbd>albendazole</kbd> is count of <code>woman_ID</code>s where <code>immun-meds.albendazole_taken</code> = 'yes'
+                   <li><kbd>daily_iron</kbd> is count of <code>woman_ID</code>s where <code>immun-meds.daily_iron</code> = 'yes'
+                   <li><kbd>tt_first_dose</kbd> is count of <code>woman_ID</code>s where <code>immun-meds.tt_actual_first_dose</code> = 'yes'
+                 </ol>
                </div>
             </div>
          </div>
          
          <button type="button" class="collapsible">FORM: Post Delivery Form</button>
          <div class="content">
-            <div class = "row form-group">
-               <div class ="col">
+            <div class = "row row-h">
+               <div class ="col-5">
                   <br>
                   <form class="" action="pdf" method="post" enctype="multipart/form-data">
-                     <p>Upload csv/xlsx file with raw data:</p>
+                     <p>Upload raw data (csv/xlsx):</p>
                      <input type="file" name="pdf_file" class="btn-secondary form-control-file" value="" required><br>
                      <div class="input-group mb-3">
                         <div class="input-group-prepend">
                            <div class="input-group-text">
-                              <input type="checkbox" name="date_checkbox">
+                              <input type="checkbox" name="date_checkbox" id="pdf_check" onclick="toggleFormElements('pdf')">
                            </div>
-                           <span class="input-group-text">From</span>
                         </div>
-                        <input type="date" name="from" class="form-control" value="2020-01-01" required">
+                        <input type="date" name="from" class="form-control" id="pdf_from" required disabled>
                         <div class="input-group-prepend">
-                           <span class="input-group-text">To</span>
+                           <span class="input-group-text">to</span>
                         </div>
-                        <input type="date" name="to" class="form-control" value="2020-04-30" required>
+                        <input type="date" name="to" class="form-control" id="pdf_to" required disabled>
                      </div>
                      <input type ="submit" name="submit" class = "btn btn-primary" value="GENERATE"><br><br>
                   </form>
                </div>
-               <div class ="col">
-                  <p>The csv or excel file must have data in the first tab with the following columns:
-                  <p id = 'col_list'>chw_name, woman_ID, last_visit, delivery_date_pdf, delivery_location,
-                     child_one.birth_outcome1, child_two.birth_outcome2, child_three.birth_outcome3, child_one.baby_weight1, child_two.baby_weight2, child_three.baby_weight3,
-                     pregnancy_outcome
-                  </p>
-                  </p>
+               <div class="col-7 hrz-txt-scroll">
+                 <div class="inset">
+                 <strong>Key: </strong>
+                 <code>input variable</code> and <kbd>output indicator</kbd><br>
+                 <strong>Note: </strong>All output metrics grouped by <code>chw_name</code>
+                 </div>
+                 <strong><u>Algorithm</u></strong><br>
+                 <ol>
+                   <li>Clean identifier by removing any spaces from <code>woman_ID</code>
+                 </ol>
+                 <strong>A. Branch I</strong>
+                 <ol start=2>
+                   <li>Filter for rows where <code>last_visit</code> is between the dates provided
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>woman_ID</code> & <code>last_visit</code>
+                     <li>Drop duplicates for <code>woman_ID</code>, keeping last row
+                   </ul>
+                   <li><kbd>ppw_visited</kbd> is count of <code>woman_ID</code>
+                   </ol>
+                 <strong>B. Branch II</strong>
+                 <ol start=2>
+                   <li>Filter for rows where <code>delivery_date_pdf</code> is between the dates provided
+                   <li>Remove duplicates
+                   <ul>
+                     <li>Sort rows by <code>woman_ID</code> & <code>last_visit</code>
+                     <li>Drop duplicates for <code>woman_ID</code>, keeping last row
+                   </ul>
+                   <li><kbd>num_of_deliv</kbd> is count of <code>woman_ID</code>s
+                   <li><kbd>inst_deliv</kbd> is count of <code>woman_ID</code>s where <code>delivery_location</code> is 'private_clinic_hospital',
+                    'primary_health_center','nyaya_health_hospital', 'district_hospital', 'health_post',
+                    'non-nhn_health_facility', 'govt_facility_outside_nepal' or 'private_clinic-hospital_outside_nepal'
+                   <li><kbd>live_births</kbd> is count of <code>woman_ID</code>s where <code>child_one.birth_outcome1</code>,
+                    <code>child_two.birth_outcome2</code>, or <code>child_three.birth_outcome3</code> = 'live_birth'
+                   <li><kbd>still_births</kbd> is count of <code>woman_ID</code>s where <code>child_one.birth_outcome1</code>,
+                    <code>child_two.birth_outcome2</code>, or <code>child_three.birth_outcome3</code> = 'still_birth'
+                   <li><kbd>low_birth_wt</kbd> is count of <code>woman_ID</code>s where <code>child_one.baby_weight1</code>,
+                    <code>child_two.baby_weight2</code>, or <code>child_three.baby_weight3</code> < '2.5'
+                   <li>For safe abortions:
+                   <ul>
+                     <li>Filter for rows where <code>pregnancy_outcome</code> = 'intended_abortion'
+                     <li><kbd>safe_abortions</kbd> is count of <code>woman_ID</code>s where <code>delivery_location</code> is 'primary_health_center',
+                   'nyaya_health_hospital' or 'district_hospital'
+                   </ul>
+                 </ol>
                </div>
             </div>
          </div>
          
       </div>
-      
+
       <script>
          var coll = document.getElementsByClassName("collapsible");
          var i;

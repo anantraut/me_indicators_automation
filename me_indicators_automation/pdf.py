@@ -29,8 +29,9 @@ def pdf_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
 
     pdf_ppw_visited = CaseForm() #pdf_ppw_vis is created only to calculate ppw_visited (post partum women visited based on last_visit in date range)
     pdf_ppw_visited.df = pdf.df
-    pdf_ppw_visited.remove_duplicates(sort_by=['person_id', 'last_visit'],dupl_subset=['person_id'])
     pdf_ppw_visited.filter_by_date('last_visit', [dt1,dt2])
+    pdf_ppw_visited.remove_duplicates(sort_by=['person_id', 'last_visit'],dupl_subset=['person_id'])
+    pdf_ppw_visited.count_by_chw('ppw_visited','person_id')
 
     #filter for data with delivery date in the given date range, all indicators after this are based on this filtered data
     pdf.filter_by_date('delivery_date_pdf', [dt1,dt2])

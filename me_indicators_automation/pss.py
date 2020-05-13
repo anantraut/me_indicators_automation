@@ -45,5 +45,6 @@ def pss_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
     pss.count_by_chw('dipo','person_id',['contraceptive_current',['Dipo']])
     pss.count_by_chw('iud','person_id',['contraceptive_current',['iud']])
     pss.count_by_chw('implants','person_id',['contraceptive_current',['implants']])
-    pss.count_by_chw('refer','person_id',['contraceptive_current',['implants']])
+#FIX BELOW
+    #pss.count_by_chw('refer','person_id',['contraceptive_current',['implants']])
     return pss.results
