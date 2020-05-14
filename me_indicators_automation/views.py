@@ -23,7 +23,7 @@ def home():
 def pss_data():
     if request.method == "POST":
         f = request.files['pss_file']
-        if request.form.getlist('date_checkbox')[0] == 'on':
+        if 'date_checkbox' in request.form:
             data = pss.pss_metrics(f, dt1=request.form['from'], dt2=request.form['to'], content_type=f.headers["Content-Type"])
         else:
             data = pss.pss_metrics(f, content_type=f.headers["Content-Type"])
@@ -36,13 +36,13 @@ def pss_data():
 def pdf_data():
     if request.method == "POST":
         f = request.files['pdf_file']
-        if request.form.getlist('date_checkbox')[0] == 'on':
+        if 'date_checkbox' in request.form:
             data = pdf.pdf_metrics(f, dt1=request.form['from'], dt2=request.form['to'], content_type=f.headers["Content-Type"])
         else:
             data = pdf.pdf_metrics(f, content_type=f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=pdf_metrics.csv"
-        resp.headers["Content-Type"] = "text/csv"
+        resp.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     return resp
 
 @app.route('/house', methods=['GET','POST'])
@@ -59,7 +59,6 @@ def house_data():
 def family_data():
     if request.method == "POST":
         f = request.files['family_file']
-        print(request.form['date_checkbox'])
         data = family.family_metrics(f, f.headers["Content-Type"])
         resp = make_response(data.to_csv())
         resp.headers["Content-Disposition"] = "attachment; filename=family_metrics.csv"
@@ -85,8 +84,8 @@ def anc_data():
         else:
             data = anc.anc_metrics(f, content_type=f.headers["Content-Type"])
         resp = make_response(data.to_csv())
-        resp.headers["Content-Disposition"] = "attachment; filename=anc_metrics.csv"
-        resp.headers["Content-Type"] = "text/csv"
+        resp.headers["Content-Disposition"] = "attachment; filename=" + "sheet.xlsx"
+        resp.headers["Content-Type"] = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     return resp
 
 if __name__ == '__main__':

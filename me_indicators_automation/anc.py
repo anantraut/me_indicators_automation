@@ -46,11 +46,11 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
     
     anc_home.count_by_chw('home_visit_yes','person_id', ['person_at_home',['yes']])
     anc_home.count_by_chw('home_visit_no','person_id', ['person_at_home',['no']])
-    anc_home.add_columns('home_visit',['home_visit_yes', 'home_visit_no'])
+    #anc_home.add_columns('home_visit',['home_visit_yes', 'home_visit_no'])
     
     anc_home.count_by_chw('agrees_for_service_yes','person_id', ['agrees_for_service',['yes']])
     anc_home.count_by_chw('agrees_for_service_no','person_id', ['agrees_for_service',['no']])
-    anc_home.add_columns('agrees_for_service',['agrees_for_service_yes', 'agrees_for_service_no'])
+    #anc_home.add_columns('agrees_for_service',['agrees_for_service_yes', 'agrees_for_service_no'])
     
     anc_home.filter_for_condition('agrees_for_service', 'yes')
     
@@ -58,7 +58,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
     anc_home.count_by_chw('record_usg_findings','person_id', ['record_usg_findings',['yes']])
     anc_home.count_by_chw('usg_complete','person_id', ['usg_complete',['yes']])
     
-    anc_home.countifs_by_chw('Lab_high_risk', [['high_risk_vdrl',['yes']], 
+    anc_home.countifs_by_chw('lab_high_risk', [['high_risk_vdrl',['yes']], 
                                        ['high_risk.high_risk_urine_sugar',['yes']],
                                        ['high_risk_hcv',['yes']], 
                                        ['high_risk.high_risk_hiv',['yes']], 
@@ -71,7 +71,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
                                        ['high_risk_fetal_presentation',['yes']],
                                        ['high_risk_no_of_fetus',['yes']]])
     
-    anc_home.count_by_chw('High_risk', 'person_id', ['high_risk',[1]])
+    anc_home.count_by_chw('high_risk', 'person_id', ['high_risk',[1]])
     
     
     '''
@@ -88,7 +88,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
     anc_proto.df = anc.df.copy()
     anc_proto.remove_duplicates(sort_by=['person_id', 'person_at_home', 'last_visit'],dupl_subset=['person_id'])
     
-    anc_proto.countifs_by_chw('4th complete', [['anc_visit1_month',[4]], 
+    anc_proto.countifs_by_chw('4th_complete', [['anc_visit1_month',[4]], 
                                        ['anc_visit2_month',[4]],
                                        ['anc_visit3_month',[4]], 
                                        ['anc_visit4_month',[4]], 
@@ -98,7 +98,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
                                        ['anc_visit8_month',[4]],
                                        ['anc_visit9_month',[4]],
                                        ['anc_visit10_month',[4]]])
-    anc_proto.countifs_by_chw('6th complete', [['anc_visit1_month',[6]], 
+    anc_proto.countifs_by_chw('6th_complete', [['anc_visit1_month',[6]], 
                                        ['anc_visit2_month',[6]],
                                        ['anc_visit3_month',[6]], 
                                        ['anc_visit4_month',[6]], 
@@ -108,7 +108,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
                                        ['anc_visit8_month',[6]],
                                        ['anc_visit9_month',[6]],
                                        ['anc_visit10_month',[6]]])
-    anc_proto.countifs_by_chw('8th complete', [['anc_visit1_month',[8]], 
+    anc_proto.countifs_by_chw('8th_complete', [['anc_visit1_month',[8]], 
                                        ['anc_visit2_month',[8]],
                                        ['anc_visit3_month',[8]], 
                                        ['anc_visit4_month',[8]], 
@@ -118,7 +118,7 @@ def anc_metrics(file, dt1='2015-01-01', dt2='2050-01-01', content_type='text/csv
                                        ['anc_visit8_month',[8]],
                                        ['anc_visit9_month',[8]],
                                        ['anc_visit10_month',[8]]])
-    anc_proto.countifs_by_chw('9th complete', [['anc_visit1_month',[9]], 
+    anc_proto.countifs_by_chw('9th_complete', [['anc_visit1_month',[9]], 
                                        ['anc_visit2_month',[9]],
                                        ['anc_visit3_month',[9]], 
                                        ['anc_visit4_month',[9]], 
